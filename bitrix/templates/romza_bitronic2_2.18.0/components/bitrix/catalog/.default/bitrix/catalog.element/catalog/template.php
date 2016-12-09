@@ -434,6 +434,21 @@ endif
 				 "out-of-stock" on this wrap -->
 				<div class="buy-block-wrap">
 					<div class="buy-block-main<?if(!($bShowEdost && !$arParams['EDOST_PREVIEW'])):?> __slim<? endif ?>">
+						<?if($USER->isAdmin())
+						{
+							$APPLICATION->IncludeComponent(
+								"bitrix:main.include", "",
+								Array(
+									"AREA_FILE_SHOW" => "file",
+									"PATH" => "/include_areas/catalog/buy_credit.php",
+									"PARAMS" => array(
+										"TITLE" => $arResult['NAME'],
+										"CATEGORY" => $arResult['NAME']
+									)
+								)
+							);
+						}
+						?>
 						<div class="buy-block-content">
 							<div class="product-name" itemprop="name"><?=$productTitle?></div>
 							<div class="product-main-photo">
