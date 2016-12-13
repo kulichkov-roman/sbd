@@ -1,4 +1,11 @@
 <?
+//-- Конфигурация сайта
+$configuration = \Bitrix\Main\Config\Configuration::getInstance();
+$configuration->add('partnerId', 'a06m00000018y7rAAA');
+$configuration->add('partnerOrderId', 'test_order_'.uniqid());
+$configuration->add('secretKeyId', 'grid-secret-18y7r72a');
+$configuration->add('catalogIBlockId', 6);
+
 //-- Добавление обработчика события
 
 AddEventHandler("sale", "OnOrderStatusSendEmail", "bxModifyStatusMails");

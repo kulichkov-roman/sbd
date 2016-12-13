@@ -434,21 +434,6 @@ endif
 				 "out-of-stock" on this wrap -->
 				<div class="buy-block-wrap">
 					<div class="buy-block-main<?if(!($bShowEdost && !$arParams['EDOST_PREVIEW'])):?> __slim<? endif ?>">
-						<?if($USER->isAdmin())
-						{
-							$APPLICATION->IncludeComponent(
-								"bitrix:main.include", "",
-								Array(
-									"AREA_FILE_SHOW" => "file",
-									"PATH" => "/include_areas/catalog/buy_credit.php",
-									"PARAMS" => array(
-										"TITLE" => $arResult['NAME'],
-										"CATEGORY" => $arResult['NAME']
-									)
-								)
-							);
-						}
-						?>
 						<div class="buy-block-content">
 							<div class="product-name" itemprop="name"><?=$productTitle?></div>
 							<div class="product-main-photo">
@@ -492,6 +477,20 @@ endif
 										?>
 										<? $frame->end() ?>
 									</div>
+									<?if($USER->isAdmin())
+									{
+										?>
+										<a href="">Купить в кредит 999 р./месяц</a>
+										<script type="text/javascript">
+											window.__KVKData = {
+												order:"<?=$arResult['B64_ORDER_PARAMS'];?>",
+												sign: "<?=$arResult['B64_SIGN'];?>",
+												type: "full"
+											};
+										</script>
+										<?
+									}
+									?>
 <?
 $frame = $this->createFrame()->begin('');
 if (is_array($arResult['PROPERTIES']['SERVICE'])
