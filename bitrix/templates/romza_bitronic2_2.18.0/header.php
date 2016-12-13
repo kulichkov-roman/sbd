@@ -29,22 +29,22 @@ if ($_POST['rz_ajax_no_header'] === 'y') {
 	<?
 
 	\Bitrix\Main\Localization\Loc::loadMessages(__FILE__);
-	
+
 	global $rz_b2_options;
 	global $USER;
-	
+
 	$bMainPage = $APPLICATION->GetCurPage(false) == SITE_DIR;
 	$arDefIncludeParams = array(
-		"AREA_FILE_SHOW" => "file",	
+		"AREA_FILE_SHOW" => "file",
 		"EDIT_TEMPLATE" => "include_areas_template.php"
 	);
-	
+
 	if(!Loader::includeModule($moduleId)) die('Module ' . $moduleId . ' not installed!');
 	if(!Loader::includeModule("yenisite.core")) die('Module yenisite.core not installed!');
-	
+
 	use Bitronic2\Mobile;
 	Mobile::Init();
-	
+
 	$frame = new \Bitrix\Main\Page\FrameBuffered("rz_dynamic_full_mode_meta", false);
 	?>
 	<!-- ВСТАВИТЬ ПОСЛЕ ОБНОВЫ -->
@@ -83,13 +83,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH."/template_styles.css");
 	$APPLICATION->SetAdditionalCSS("/bitrix/js/socialservices/css/ss.css");
 	?>
-	
+
 	<!-- Respond.js - IE8 support of media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!-- selectivizr - IE8- support for css3 classes like :checked -->
 	<!--[if lt IE 9]>
 		<script src="<?=SITE_TEMPLATE_PATH?>/js/3rd-party-libs/selectivizr-min.js"></script>
-    	<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 	<?ob_start();
 	$APPLICATION->IncludeComponent("bitrix:main.include", "", array_merge($arDefIncludeParams,array("PATH" => SITE_DIR."include_areas/header/settings.php")), false, array("HIDE_ICONS"=>"Y"));
@@ -340,18 +340,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		'b-rub': "<?=GetMessage('BITRONIC2_RUB_CHAR')?>"
 	});
 	</script>
-	
+
 	<div class="bitrix-admin-panel">
 		<div class="b_panel"><?$APPLICATION->ShowPanel();?></div>
 	</div>
-	
+
 	<button class="btn-main to-top">
 		<i class="flaticon-key22"></i>
 		<span class="text"><?=GetMessage('BITRONIC2_BUTTON_UP');?></span>
 	</button>
 
 	<div class="big-wrap" itemscope itemtype="http://schema.org/Store"><? // will be closed in footer.php ?>
-	
+
 	<div class="top-line">
 		<div class="container">
 			<div class="top-line-content clearfix">
@@ -374,7 +374,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <? endif ?>
 			<?$APPLICATION->IncludeComponent("bitrix:main.include", "", array_merge($arDefIncludeParams,array("PATH" => SITE_DIR."include_areas/header/basket.php")), false, array("HIDE_ICONS"=>"Y"));?>
 			</div><!-- /top-line-content -->
-			
+
 			<?=$switch_currency;?>
 			<?
 			// TODO
@@ -444,14 +444,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 								Tools::includePostfixArea($pf, SITE_DIR . "include_areas/footer/address.php", true, 'address-only');
 								?>
 							</div>
-							
+
 							<div class="modal-form">
 								<?//$APPLICATION->IncludeComponent("bitrix:main.include", "", array_merge($arDefIncludeParams,array("PATH" => SITE_DIR."include_areas/header/callme.php")), false, array("HIDE_ICONS"=>"Y"));?>
 							</div>
-						</div>	
+						</div>
 					</div><!-- header-contacts -->
 				</div><!-- city-and-time -->
-				
+
 				<?$APPLICATION->IncludeComponent("bitrix:main.include", "", array_merge($arDefIncludeParams,array("PATH" => SITE_DIR."include_areas/header/search.php")), false, array("HIDE_ICONS"=>"Y"));?>
 			</div><!-- header-main-content.clearfix -->
 		</div><!-- /container -->
@@ -464,7 +464,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 			?>
 		</div>
 	</header><!-- page-header v1/v2/v3/v4 -->
-	
+
 	<?if(!$bMainPage):?>
 	<div class="container bcrumbs-container">
 		<nav class="breadcrumbs" data-backnav-enabled="<?= ($rz_b2_options['backnav_enabled'] == 'Y') ? 'true' : 'false' ?>">

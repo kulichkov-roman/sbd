@@ -403,7 +403,7 @@ endif
 						"FULLSCREEN2" => "Y",
 						"ZOOM2" => "Y",
 						"ANAGLYPH2" => "Y"
-						), 
+						),
 						$component
 					);?>
 
@@ -479,15 +479,19 @@ endif
 									</div>
 									<?if($USER->isAdmin())
 									{
+
 										?>
-										<a href="">Купить в кредит 999 р./месяц</a>
-										<script type="text/javascript">
-											window.__KVKData = {
-												order:"<?=$arResult['B64_ORDER_PARAMS'];?>",
-												sign: "<?=$arResult['B64_SIGN'];?>",
-												type: "full"
-											};
-										</script>
+
+										<?
+											$kvkData = array(
+												order => $arResult['B64_ORDER_PARAMS'],
+												sign => $arResult['B64_SIGN'],
+												type=>"full"
+											);
+										?>
+										<a href="#" class="js-kvk-button" data-kvk='<?=json_encode($kvkData);?>'>
+											Купить в кредит 999 р./месяц
+										</a>
 										<?
 									}
 									?>

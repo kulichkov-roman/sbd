@@ -3,20 +3,23 @@
         console.log('KVK in not inited yet');
     };
 
+    if (typeof jQuery !== 'undefined') {
+        $('.js-kvk-button').on('click', function(e) {
+            e.preventDefault();
+            window.openKvkForm($(this).data('kvk'));
+        });
+    }
+
     window.onKvkload = function(KVK) {
-        if (typeof __KVKData === 'undefined') {
-            console.log('No __KVKData variable');
-            return;
-        }
-        var form = KVK.ui('form', __KVKData);
-        window.openKvkForm = function () {
+        // if (typeof __KVKData === 'undefined') {
+        //     console.log('No __KVKData variable');
+        //     return;
+        // }
+        window.openKvkForm = function (data) {
+            console.log('Opening KVK form', data);
+            var form = KVK.ui('form', data);
             form.open();
         };
-        if (typeof jQuery !== 'undefined') {
-            jQuery('.js-kvk-button').on('click', function() {
-                openKvkForm();
-            });
-        }
         console.log('KVK is loaded');
     }
 
