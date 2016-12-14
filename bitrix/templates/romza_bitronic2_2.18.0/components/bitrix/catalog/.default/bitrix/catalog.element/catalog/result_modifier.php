@@ -975,8 +975,8 @@ if($USER->isAdmin())
 	if(!empty($arResult['IBLOCK_SECTION_ID']))
 	{
 		$obCache = new CPHPCache();
-		$cacheLifeTime = 3600;
-		$cacheID = 'arSection';
+		$cacheLifeTime = 2628000;
+		$cacheID = 'arSection'.$arResult['IBLOCK_SECTION_ID'];
 		$cachePath = '/yt/'.$cacheID;
 
 		if($obCache->InitCache($cacheLifeTime, $cacheID, $cachePath))
@@ -1020,27 +1020,37 @@ if($USER->isAdmin())
 		);
 	}
 
+    if($arResult['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'])
+    {
+        $price = $arResult['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'];
+    }
+    else
+    {
+        $price = $arResult['PRICES']['BASE']['VALUE'];
+    }
+
 	$arOrder = array(
 		'items' => array(
 			array(
 				'title' => $arResult['NAME'],
 				'category' => $arSection['NAME'],
 				'qty' => 1,
-				'price' => $arResult['CATALOG_PRICE_1']
+				'price' => $price
 			),
-			'details' => array(
-				'firstname' => $arUserItem['NAME'],
-				'lastname' => $arUserItem['LAST_NAME'],
-				'middlename' => $arUserItem['SECOND_NAME'],
-				'email' => $arUserItem['EMAIL']
-			),
-			'partnerId' => $configuration->get('partnerId'),
-			'partnerOrderId' => $configuration->get('partnerOrderId'),
 		),
+        'details' => array(
+            'firstname' => $arUserItem['NAME'],
+            'lastname' => $arUserItem['LAST_NAME'],
+            'middlename' => $arUserItem['SECOND_NAME'],
+            'email' => $arUserItem['EMAIL']
+        ),
+        'partnerId' => $configuration->get('partnerId'),
+        'partnerOrderId' => $configuration->get('partnerOrderId'),
 	);
 
 	$json = json_encode($arOrder);
 	$base64 = base64_encode($json);
+
 	$secret = $configuration->get('secretKeyId');
 
 	function getSignMessage($message, $secretPhrase)
@@ -1058,5 +1068,6 @@ if($USER->isAdmin())
 
 	$arResult['B64_ORDER_PARAMS'] = $base64;
 	$arResult['B64_SIGN'] = $sign;
+	$arResult['PRICE_CREDIT'] = $price*13/100;
 }
 

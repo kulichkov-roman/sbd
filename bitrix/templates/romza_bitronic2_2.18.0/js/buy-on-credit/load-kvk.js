@@ -1,4 +1,4 @@
-(function () {
+$(function () {
     window.openKvkForm = function () {
         console.log('KVK in not inited yet');
     };
@@ -34,5 +34,5 @@
         firstScript.parentNode.insertBefore(scriptElement, firstScript.nextSibling || firstScript);
     }
 
-    loadKvkLib('https://form.kupivkredit.ru/sdk/v1/sdk.js', 'onKvkload');
-})();
+    loadKvkLib('https://form-test.kupivkredit.ru/sdk/v1/sdk.js', 'onKvkload');
+});

@@ -479,18 +479,14 @@ endif
 									</div>
 									<?if($USER->isAdmin())
 									{
-
+										$arKvkData = array(
+											'order' => $arResult['B64_ORDER_PARAMS'],
+											'sign' => $arResult['B64_SIGN'],
+											'type' => 'full'
+										);
 										?>
-
-										<?
-											$kvkData = array(
-												order => $arResult['B64_ORDER_PARAMS'],
-												sign => $arResult['B64_SIGN'],
-												type=>"full"
-											);
-										?>
-										<a href="#" class="js-kvk-button" data-kvk='<?=json_encode($kvkData);?>'>
-											Купить в кредит 999 р./месяц
+										<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+											Купить в кредит от <?=$arResult['PRICE_CREDIT']?> р./месяц
 										</a>
 										<?
 									}
