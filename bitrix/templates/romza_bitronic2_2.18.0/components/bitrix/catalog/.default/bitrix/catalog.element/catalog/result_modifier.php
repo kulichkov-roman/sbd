@@ -1068,6 +1068,7 @@ if($USER->isAdmin())
 
 	$arResult['B64_ORDER_PARAMS'] = $base64;
 	$arResult['B64_SIGN'] = $sign;
-	$arResult['PRICE_CREDIT'] = $price*13/100;
+	$arResult['PRICE_CREDIT'] = $price * 13 / 100;
+	$arResult['PRICE_CREDIT'] = ceil($arResult['PRICE_CREDIT'] / 100) * 100 - 1;
 }
 
