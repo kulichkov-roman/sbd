@@ -965,7 +965,7 @@ $arResult['bTechTab'] = (
 if($USER->isAdmin())
 {
 	$arUserItem = array();
-	$rsUser = CUser::GetByID($USER->GetID());
+	$rsUser = \CUser::GetByID($USER->GetID());
 	$arUserItem = $rsUser->Fetch();
 
 	$configuration = \Bitrix\Main\Config\Configuration::getInstance();

@@ -201,6 +201,22 @@ foreach($arResult['ITEMS'] as $arItem):
 								<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['DISCOUNT_VALUE'], $arItem['MIN_PRICE']['PRINT_DISCOUNT_VALUE']);?>
 						</span>
 					</div>
+					<?if($USER->isAdmin())
+					{
+						$arKvkData = array(
+							'order' => $arItem['B64_ORDER_PARAMS'],
+							'sign' => $arItem['B64_SIGN'],
+							'type' => 'full'
+						);
+						?>
+						<div>
+							<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+								Купить в кредит от <?=$arItem['PRICE_CREDIT']?> р./месяц
+							</a>
+						</div>
+						<?
+					}
+					?>
 					<div id="<?= $arItemIDs['PRICE_ADDITIONAL'] ?>" class="additional-price-container <?=(empty($availableOnRequest)&&CRZBitronic2Settings::isPro()?'':' invisible')?>"><?
 						if (count($arItem['PRICES']) > 1 && CRZBitronic2Settings::isPro()):?>
 
