@@ -360,6 +360,22 @@ $bStores = $arParams["USE_STORE"] == "Y" && Bitrix\Main\ModuleManager::isModuleI
 						<?=($arItem['bOffers'] && !$bSkuExt) ? GetMessage('BITRONIC2_LIST_FROM') : ''?>
 						<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['DISCOUNT_VALUE'], $arItem['MIN_PRICE']['PRINT_DISCOUNT_VALUE']);?>
 						</span>
+						<?if($USER->isAdmin())
+						{
+							$arKvkData = array(
+								'order' => $arItem['B64_ORDER_PARAMS'],
+								'sign' => $arItem['B64_SIGN'],
+								'type' => 'full'
+							);
+							?>
+							<div>
+								<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+									Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
+								</a>
+							</div>
+							<?
+						}
+						?>
 					</div>
 					<div id="<?= $arItemIDs['PRICE_ADDITIONAL'] ?>" class="prices additional-price-container <?=(empty($availableOnRequest)&&CRZBitronic2Settings::isPro()?'':' hide')?>">
 						<?

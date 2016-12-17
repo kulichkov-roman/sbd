@@ -9,6 +9,7 @@ if(
     $_SERVER['REMOTE_ADDR'] == '178.49.143.70'   ||
     $_SERVER['REMOTE_ADDR'] == '94.180.115.212'  ||
     $_SERVER['REMOTE_ADDR'] == '195.16.92.102'   ||
+    $_SERVER['REMOTE_ADDR'] == '217.107.127.36'   ||
     $_SERVER['REMOTE_ADDR'] == '188.162.15.234'
 
 )

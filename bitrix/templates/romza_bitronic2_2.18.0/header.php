@@ -82,6 +82,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH."/templates_addon.css");
 	$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH."/template_styles.css");
 	$APPLICATION->SetAdditionalCSS("/bitrix/js/socialservices/css/ss.css");
+	$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH."/css/developers.css");
 	?>
 
 	<!-- Respond.js - IE8 support of media queries -->

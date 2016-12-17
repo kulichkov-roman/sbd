@@ -486,7 +486,7 @@ endif
 										);
 										?>
 										<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
-											Купить в кредит от <?=$arResult['PRICE_CREDIT']?> р./месяц
+											Купить в кредит от <b><?=$arResult['PRICE_CREDIT']?> р./месяц</b>
 										</a>
 										<?
 									}

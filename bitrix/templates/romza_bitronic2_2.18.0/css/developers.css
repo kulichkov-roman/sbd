@@ -1,0 +1,12 @@
+.js-kvk-button{
+	text-decoration: underline !important;
+	font-size: 11px;
+	color: #000 !important;
+}
+.js-kvk-button:hover{
+	text-decoration: none !important;
+}
+.catalog-item .js-kvk-button{
+	display: inline-block;
+    margin-bottom: 7px;
+}
