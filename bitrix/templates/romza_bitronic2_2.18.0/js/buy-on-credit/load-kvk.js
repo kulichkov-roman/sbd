@@ -4,7 +4,7 @@ $(function () {
     };
 
     if (typeof jQuery !== 'undefined') {
-        $('.js-kvk-button').on('click', function(e) {
+        $('body').on('click', '.js-kvk-button', function(e) {
             e.preventDefault();
             window.openKvkForm($(this).data('kvk'));
         });
