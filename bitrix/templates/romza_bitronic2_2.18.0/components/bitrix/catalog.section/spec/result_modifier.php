@@ -2,9 +2,8 @@
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
-
 // AJAX PATH
-$ajaxPath = SITE_DIR."ajax/catalog.php";
+$ajaxPath = SITE_DIR."ajax/main_spec.php";
 $ajaxPathCompare = SITE_DIR."ajax/compare.php";
 $ajaxPathFavorite = SITE_DIR."ajax/favorites.php";
 $arResult['ADD_URL_TEMPLATE'] = $ajaxPath."?".$arParams["ACTION_VARIABLE"]."=ADD2BASKET&".$arParams["PRODUCT_ID_VARIABLE"]."=#ID#&ajax_basket=Y";
@@ -63,11 +62,11 @@ foreach($arResult['ITEMS'] as $index => $arItem)
 		$arItem['MORE_PHOTO_COUNT'] = count($productSlider);
 		$arItem['SHOW_SLIDER'] = $arItem['MORE_PHOTO_COUNT'] > 1;
 		
-		$arItem['PICTURE_PRINT']['SRC'] = CResizer2Resize::ResizeGD2($arItem['MORE_PHOTO'][0]['SRC'], $arParams['RESIZER_SECTION']);
+		$arItem['PICTURE_PRINT']['SRC'] = CResizer2Resize::ResizeGD2($arItem['MORE_PHOTO'][0]['SRC'], $arParams['RESIZER_SET_BIG']);
 	}
 	else
 	{
-		$arItem['PICTURE_PRINT']['SRC'] = CRZBitronic2CatalogUtils::getElementPictureById($arItem['ID'], $arParams['RESIZER_SECTION']);
+		$arItem['PICTURE_PRINT']['SRC'] = CRZBitronic2CatalogUtils::getElementPictureById($arItem['ID'], $arParams['RESIZER_SET_BIG']);
 	}
 		
 	$arItem['CHECK_QUANTITY'] = false;
@@ -188,9 +187,8 @@ foreach($arResult['ITEMS'] as $index => $arItem)
 				}
 			}
 		}
-		if (isset($arOffer)) {
-			unset($arOffer);
-		}
+		unset($arOffer);
+
 		if($arItem['CAN_BUY'])
 		{
 			$arItem['MIN_PRICE'] = CIBlockPriceTools::getMinPriceFromOffers(
@@ -203,6 +201,10 @@ foreach($arResult['ITEMS'] as $index => $arItem)
 		else
 		{
 			$arItem['MIN_PRICE'] = $minNotAvailPrice;
+			if($arParams['HIDE_NOTAVAILABLE'] = 'Y')
+			{
+				unset($arResult['ITEMS'][$index]);
+			}
 		}
 	} else {
 		// PRICE MATRIX
@@ -210,34 +212,12 @@ foreach($arResult['ITEMS'] as $index => $arItem)
 			$arItem["PRICE_MATRIX"] = CRZBitronic2CatalogUtils::getPriceMatrix($arItem["ID"], $arItem['MIN_PRICE']['PRICE_ID'], $arResult['CONVERT_CURRENCY']);
 		}
 	}
-
-	ob_start();
-	$arItem['STICKERS'] = $APPLICATION->IncludeComponent("yenisite:stickers", "section", array(
-		"ELEMENT" => $arItem,
-		"STICKER_NEW" => $arParams['STICKER_NEW'],
-		"STICKER_HIT" => $arParams['STICKER_HIT'],
-		"TAB_PROPERTY_NEW" => $arParams['TAB_PROPERTY_NEW'],
-		"TAB_PROPERTY_HIT" => $arParams['TAB_PROPERTY_HIT'],
-		"TAB_PROPERTY_SALE" => $arParams['TAB_PROPERTY_SALE'],
-		"TAB_PROPERTY_BESTSELLER" => $arParams['TAB_PROPERTY_BESTSELLER'],
-		"MAIN_SP_ON_AUTO_NEW" => $arParams['MAIN_SP_ON_AUTO_NEW'],
-		"SHOW_DISCOUNT_PERCENT" => $arParams['SHOW_DISCOUNT_PERCENT'],
-		"CUSTOM_STICKERS" => $arItem['PROPERTIES'][iRZProp::STICKERS],
-		),
-		$this->__component,
-		array("HIDE_ICONS"=>"Y")
-	);
-	$arItem['yenisite:stickers'] = ob_get_clean();
-
+	
 	$arResult['ITEMS'][$index] = $arItem;
 
 	if ($arItem['FOR_ORDER']) {
 		$arResult['HAS_FOR_ORDER'] = true;
 	}
-}
-
-if ($arParams['SHOW_CATCHBUY']) {
-	CRZBitronic2CatalogUtils::getCatchbuyInfoList($arResult['ITEMS']);
 }
 
 $fotContent = '';
@@ -246,7 +226,6 @@ if ($arResult['HAS_FOR_ORDER']) {
 }
 $arResult['AVAILABILITY_COMMENTS_ENABLED'] = !empty($fotContent);
 unset($fotContent);
-
 
 if($USER->isAdmin())
 {
@@ -317,7 +296,7 @@ if($USER->isAdmin())
 		return $result;
 	}
 
-	foreach ($arResult['TABS'] as &$arItem)
+	foreach ($arResult['ITEMS'] as &$arItem)
 	{
 		if($arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'])
 		{
@@ -351,7 +330,7 @@ if($USER->isAdmin())
 		$base64 = base64_encode($json);
 
 		$secret = $configuration->get('secretKeyId');
-		
+
 		$sign = getSignMessage1($base64, $secret);
 
 		$arItem['B64_ORDER_PARAMS'] = $base64;
@@ -366,23 +345,4 @@ if($USER->isAdmin())
 		}
 	}
 	unset($arItem);
-}
-
-$cp = $this->__component;
-if (is_object($cp)) {
-	if ($arResult['NAV_RESULT']->PAGEN >= $arResult['NAV_RESULT']->nEndPage) {
-		$iPaginationSelect = $arResult['NAV_RESULT']->NavRecordCount;
-	} else {
-		$iPaginationSelect = $arResult['NAV_RESULT']->PAGEN * $arResult['NAV_RESULT']->SIZEN;
-	}
-	$iPaginationCount = $arResult['NAV_RESULT']->NavRecordCount;
-
-	$cp->arResult['NAV_PAGINATION'] = array(
-		'NUM' => $arResult['NAV_RESULT']->NavNum,
-		'PAGEN' => $arResult['NAV_RESULT']->PAGEN,
-		'END_PAGE' => $arResult['NAV_RESULT']->nEndPage,
-		'SELECT' => $iPaginationSelect,
-		'COUNT' => $arResult['NAV_RESULT']->NavRecordCount,
-	);
-	$cp->SetResultCacheKeys(array('NAV_PAGINATION'));
 }

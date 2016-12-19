@@ -1,51 +1,37 @@
 <?if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
+use Bitrix\Main\Loader;
 use Bitrix\Main\ModuleManager;
-/** @var array $arParams */
-/** @var array $arResult */
-/** @global CMain $APPLICATION */
-/** @global CUser $USER */
-/** @global CDatabase $DB */
-/** @var CBitrixComponentTemplate $this */
-/** @var string $templateName */
-/** @var string $templateFile */
-/** @var string $templateFolder */
-/** @var string $componentPath */
-/** @var CBitrixComponent $component */
 
 //no whitespace in this file!!!!!!
 $this->setFrameMode(true);
 
 // @var $moduleId
 // @var $moduleCode
-include $_SERVER["DOCUMENT_ROOT"] . SITE_TEMPLATE_PATH . '/include/debug_info_dynamic.php';
-
-$this->SetViewTarget('catalog_paginator');
-	echo $arResult["NAV_STRING"];
-$this->EndViewTarget();
+include $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH.'/include/debug_info.php';
 
 if(empty($arResult['ITEMS']))
 	return;
-
-$arJsCache = CRZBitronic2CatalogUtils::getJSCache($component);
-
+	
 $strElementEdit = CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_EDIT");
 $strElementDelete = CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_DELETE");
 $arElementDeleteParams = array("CONFIRM" => GetMessage('CT_BCS_TPL_ELEMENT_DELETE_CONFIRM'));
 
-$bStores = $arParams["USE_STORE"] == "Y" && Bitrix\Main\ModuleManager::isModuleInstalled("catalog");
+$bStores = $arParams["SHOW_AMOUNT_STORE"] == "Y" && Bitrix\Main\ModuleManager::isModuleInstalled("catalog");
+$bOneClick = Loader::includeModule('yenisite.oneclick') && $arParams['DISPLAY_ONECLICK'] === 'Y';
 $bHoverMode = $arParams['HOVER-MODE'] == 'detailed-expand';
+?>
 
-foreach($arResult['ITEMS'] as $arItem):
-	$this->AddEditAction($templateName.'-'.$arItem['ID'], $arItem['EDIT_LINK'], $strElementEdit);
-	$this->AddDeleteAction($templateName.'-'.$arItem['ID'], $arItem['DELETE_LINK'], $strElementDelete, $arElementDeleteParams);
-	$strMainID = $this->GetEditAreaId($templateName.'-'.$arItem['ID']);
+<div class="content">
+<?foreach($arResult['ITEMS'] as $arItem):
+	$this->AddEditAction($arParams['TAB_BLOCK'].'-'.$arItem['ID'], $arItem['EDIT_LINK'], $strElementEdit);
+	$this->AddDeleteAction($arParams['TAB_BLOCK'].'-'.$arItem['ID'], $arItem['DELETE_LINK'], $strElementDelete, $arElementDeleteParams);
+	$strMainID = $this->GetEditAreaId($arParams['TAB_BLOCK'].'-'.$arItem['ID']);
 	$arItemIDs = array(
 		'ID' => $strMainID,
 		'PICT' => $strMainID.'_pict',
 		'SECOND_PICT' => $strMainID.'_secondpict',
 		'STICKER_ID' => $strMainID.'_sticker',
 		'SECOND_STICKER_ID' => $strMainID.'_secondsticker',
-		'QUANTITY_CONTAINER' => $strMainID.'_quantity_container',
 		'QUANTITY' => $strMainID.'_quantity',
 		'QUANTITY_DOWN' => $strMainID.'_quant_down',
 		'QUANTITY_UP' => $strMainID.'_quant_up',
@@ -58,18 +44,14 @@ foreach($arResult['ITEMS'] as $arItem):
 		'COMPARE_LINK' => $strMainID.'_compare_link',
 		'FAVORITE_LINK' => $strMainID.'_favorite_link',
 
-		'PRICE_CONTAINER' => $strMainID.'_price_container',
-		'OLD_PRICE' => $strMainID.'_old_price',
 		'PRICE' => $strMainID.'_price',
-		'PRICE_ADDITIONAL' => $strMainID.'_price_additional',
 		'DSC_PERC' => $strMainID.'_dsc_perc',
 		'SECOND_DSC_PERC' => $strMainID.'_second_dsc_perc',
 		'PROP_DIV' => $strMainID.'_sku_tree',
 		'PROP' => $strMainID.'_prop_',
 		'DISPLAY_PROP_DIV' => $strMainID.'_sku_prop',
 		'BASKET_PROP_DIV' => $strMainID.'_basket_prop',
-		'AVAILABILITY' => $strMainID . '_availability',
-		'AVAILABILITY_MOBILE' => $strMainID . '_availability_mobile',
+		'PRICE_ADDITIONAL' => $strMainID.'_price_additional',
 	);
 	$strObName = 'ob'.preg_replace("/[^a-zA-Z0-9_]/", "x", $strMainID);
 
@@ -79,8 +61,8 @@ foreach($arResult['ITEMS'] as $arItem):
 		: $arItem['NAME']
 	);
 	$bShowStore = $bStores && !$arItem['bOffers'];
-	$bShowOneClick = $arParams['DISPLAY_ONECLICK'] && !$arItem['bOffers'];
-	
+	$bShowOneClick = $bOneClick && (!$arItem['bOffers'] || $arItem['bSkuExt']);
+
 	$availableOnRequest = $arItem['ON_REQUEST'];
 	$availableClass = (
 		!$arItem['CAN_BUY'] && !$availableOnRequest
@@ -95,39 +77,33 @@ foreach($arResult['ITEMS'] as $arItem):
 
 	$bEmptyProductProperties = empty($arItem['PRODUCT_PROPERTIES']);
 	$bBuyProps = ('Y' == $arParams['ADD_PROPERTIES_TO_BASKET'] && !$bEmptyProductProperties);
-
-	$bCatchbuy = ($arParams['SHOW_CATCHBUY'] && $arItem['CATCHBUY']);
 	if ($arItem['SHOW_SLIDER']) {
 		$arItem['SHOW_SLIDER'] = $arParams['SHOW_GALLERY_THUMB'] == 'Y';
 	}
 	?><div class="catalog-item-wrap active" id="<?=$arItemIDs['ID']?>">
-		<div class="catalog-item blocks-item wow fadeIn">
+		<div class="catalog-item blocks-item">
 			<div class="photo-wrap <?=!$arItem['SHOW_SLIDER'] ? ' no-thumbs' : ''?>">
 				<div class="photo">
 					<a href="<?=$arItem['DETAIL_PAGE_URL']?>">
 						<img src="<?=$arItem['PICTURE_PRINT']['SRC']?>" alt="<?=$arItem['PICTURE_PRINT']['ALT']?>">
-					</a><?
-					if($bCatchbuy):?>
-
-					<div class="countdown">
-						<div class="timer-wrap">
-							<div class="timer" data-until="<?=str_replace('XXX', 'T', ConvertDateTime($arItem['CATCHBUY']['ACTIVE_TO'], 'YYYY-MM-DDXXXhh:mm:ss'))?>"></div>
-							<div class="already-sold">
-								<div class="value countdown-amount"><?=(int)$arItem['CATCHBUY']['PERCENT']?>%</div>
-								<div class="countdown-period"><?=GetMessage('BITRONIC2_SOLD')?></div>
-							</div>
-							<div class="already-sold__track">
-								<div class="bar" style="width: <?=floatval($arItem['CATCHBUY']['PERCENT'])?>%"></div>
-							</div>
-						</div>
-					</div><?
-
-					endif?>
-
-					<?=$arItem['yenisite:stickers']?>
+					</a>
+					<?$APPLICATION->IncludeComponent("yenisite:stickers", "section", array(
+						"ELEMENT" => $arItem,
+						"STICKER_NEW" => $arParams['STICKER_NEW'],
+						"STICKER_HIT" => $arParams['STICKER_HIT'],
+						"TAB_PROPERTY_NEW" => $arParams['TAB_PROPERTY_NEW'],
+						"TAB_PROPERTY_HIT" => $arParams['TAB_PROPERTY_HIT'],
+						"TAB_PROPERTY_SALE" => $arParams['TAB_PROPERTY_SALE'],
+						"TAB_PROPERTY_BESTSELLER" => $arParams['TAB_PROPERTY_BESTSELLER'],
+						"MAIN_SP_ON_AUTO_NEW" => $arParams['MAIN_SP_ON_AUTO_NEW'],
+						"SHOW_DISCOUNT_PERCENT" => $arParams['SHOW_DISCOUNT_PERCENT'],
+						"CUSTOM_STICKERS" => $arItem['PROPERTIES'][iRZProp::STICKERS],
+						),
+						$component, array("HIDE_ICONS"=>"Y")
+					);?>
 					<div class="quick-view-switch" data-toggle="modal" data-target="#modal_quick-view">
 						<span class="quick-view-fake-btn">
-							<span class="text"><?=GetMessage('BITRONIC2_BLOCKS_QUICK_VIEW')?></span>
+							<span class="text"><?=GetMessage('BITRONIC2_SPEC_QUICK_VIEW')?></span>
 						</span>
 						<i class="flaticon-zoom62"></i>
 					</div>
@@ -140,7 +116,7 @@ foreach($arResult['ITEMS'] as $arItem):
 									<img 
 										src="<?=CResizer2Resize::ResizeGD2($arPhoto['SRC'], $arParams['RESIZER_SECTION_ICON'])?>" 
 										alt="<?=strlen($arPhoto['DESCRIPTION']) > 0 ? $arPhoto['DESCRIPTION'] : $arItem['PICTURE_PRINT']['ALT']?>" 
-										data-medium-image="<?=CResizer2Resize::ResizeGD2($arPhoto['SRC'], $arParams['RESIZER_SECTION'])?>"
+										data-medium-image="<?=CResizer2Resize::ResizeGD2($arPhoto['SRC'], $arParams['RESIZER_SET_BIG'])?>"
 									>
 								</div><?
 							endforeach;?>
@@ -173,34 +149,13 @@ foreach($arResult['ITEMS'] as $arItem):
 							"SET_STATUS_404" => "N",
 							),
 							$component, array("HIDE_ICONS"=>"Y")
-						);
-						?><?
-					endif
-					?><?
-						$availableID = &$arItemIDs['AVAILABILITY'];
-						$availableFrame = true;
-						$availableForOrderText = &$arItem['PROPERTIES']['RZ_FOR_ORDER_TEXT']['VALUE'];
-						$availableItemID = &$arItem['ID'];
-						$availableMeasure = &$arItem['CATALOG_MEASURE_NAME'];
-						$availableQuantity = &$arItem['CATALOG_QUANTITY'];
-						$availableStoresPostfix = 'blocks';
-						$availableSubscribe = $arItem['bOffers'] ? 'N' : $arItem['CATALOG_SUBSCRIBE'];
-						include $_SERVER['DOCUMENT_ROOT'] . SITE_TEMPLATE_PATH . '/include/availability_info.php';
-					?>
+						);?>
+					<? endif ?>
 				</div>
-				<div class="prices" id="<?=$arItemIDs['PRICE_CONTAINER']?>">
-					<? $frame = $this->createFrame($arItemIDs['PRICE_CONTAINER'], false)->begin(CRZBitronic2Composite::insertCompositLoader()) ?>
-					<div class="<?=(empty($availableOnRequest)?'':' invisible')?>">
-						<span class="price-old" id="<?=$arItemIDs['OLD_PRICE']?>">
-							<? if($arItem['MIN_PRICE']['DISCOUNT_DIFF'] > 0 && $arParams['SHOW_OLD_PRICE'] == 'Y'): ?>
-								<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['VALUE'], $arItem['MIN_PRICE']['PRINT_VALUE']);?>
-							<? endif ?>
-						</span>
-						<span class="price" id="<?=$arItemIDs['PRICE']?>">
-								<?=($arItem['bOffers']) ? GetMessage('BITRONIC2_BLOCKS_FROM') : ''?>
-								<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['DISCOUNT_VALUE'], $arItem['MIN_PRICE']['PRINT_DISCOUNT_VALUE']);?>
-						</span>
-					</div>
+				<div class="prices<?=(empty($availableOnRequest)?'':' invisible')?>">
+					<?if($arItem['MIN_PRICE']['DISCOUNT_DIFF'] > 0):?>
+						<span class="price-old"><?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['VALUE'], $arItem['MIN_PRICE']['PRINT_VALUE']);?></span>
+					<?endif?>
 					<?if($USER->isAdmin())
 					{
 						if($arItem['BUY_CREDIT_SHOW'])
@@ -220,26 +175,30 @@ foreach($arResult['ITEMS'] as $arItem):
 						}
 					}
 					?>
-					<div id="<?= $arItemIDs['PRICE_ADDITIONAL'] ?>" class="additional-price-container <?=(empty($availableOnRequest)&&CRZBitronic2Settings::isPro()?'':' invisible')?>"><?
+					<span class="price" id="<?=$arItemIDs['PRICE']?>">
+						<?=($arItem['bOffers']) ? GetMessage('BITRONIC2_SPEC_FROM') : ''?>
+						<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['DISCOUNT_VALUE'], $arItem['MIN_PRICE']['PRINT_DISCOUNT_VALUE']);?>
+					</span>
+					<div id="<?= $arItemIDs['PRICE_ADDITIONAL'] ?>" class="additional-price-container<?=(empty($availableOnRequest)&&CRZBitronic2Settings::isPro()?'':' invisible')?>"><?
 						if (count($arItem['PRICES']) > 1 && CRZBitronic2Settings::isPro()):?>
 
 						<div class="wrapper baron-wrapper additional-prices-wrap">
 							<div class="scroller scroller_v">
-							<? foreach ($arItem['PRICES'] as $priceCode => $arPrice):?>
-								<? if ($arPrice['PRICE_ID'] == $arItem['MIN_PRICE']['PRICE_ID']) continue; ?>
+							<? foreach ($arItem['PRICES'] as $priceCode => $arPrice): ?>
+								<? if ($arPrice['PRICE_ID'] != $arItem['MIN_PRICE']['PRICE_ID']): ?>
 								<? if ($arResult['PRICES'][$priceCode]['CAN_VIEW'] == false) continue; ?>
 								<? if ($arPrice['DISCOUNT_VALUE'] <= 0) continue; ?>
-
 								<div class="additional-price-type">
-									<span class="price-desc"><?=$arResult['PRICES'][$priceCode]['TITLE']?>:</span>
+									<span class="price-desc"><?= $arResult['PRICES'][$priceCode]['TITLE'] ?>:</span>
 									<span class="price"><?if(!empty($arItem['OFFERS'])) echo GetMessage('RZ_OT')?><?
 										echo CRZBitronic2CatalogUtils::getElementPriceFormat(
 											$arPrice['CURRENCY'],
 											$arPrice['DISCOUNT_VALUE'],
 											$arPrice['PRINT_DISCOUNT_VALUE']
 										);
-									?></span>
+										?></span>
 								</div>
+								<? endif ?>
 							<? endforeach ?>
 
 								<div class="scroller__track scroller__track_v">
@@ -251,48 +210,44 @@ foreach($arResult['ITEMS'] as $arItem):
 						endif?>
 
 					</div>
-					<? $frame->end() ?>
 				</div>
 				<?
-				$availableID = &$arItemIDs['AVAILABILITY_MOBILE'];
-				$availableFrame = true;
+				$availableID = false;
+				$availableFrame = false;
 				$availableForOrderText = &$arItem['PROPERTIES']['RZ_FOR_ORDER_TEXT']['VALUE'];
 				$availableItemID = &$arItem['ID'];
 				$availableMeasure = &$arItem['CATALOG_MEASURE_NAME'];
 				$availableQuantity = &$arItem['CATALOG_QUANTITY'];
-				$availableStoresPostfix = 'blocks_mobile';
+				$availableStoresPostfix = &$arParams['TAB_BLOCK'];
 				$availableSubscribe = $arItem['bOffers'] ? 'N' : $arItem['CATALOG_SUBSCRIBE'];
 				include $_SERVER['DOCUMENT_ROOT'] . SITE_TEMPLATE_PATH . '/include/availability_info.php';
-				?>
-<?
-// ***************************************
-// *********** BUY WITH PROPS ************
-// ***************************************
-if ($bBuyProps):
-?>
-				<div id="<? echo $arItemIDs['BASKET_PROP_DIV']; ?>">
-<?
-		if (!empty($arItem['PRODUCT_PROPERTIES_FILL']))
-		{
-			foreach ($arItem['PRODUCT_PROPERTIES_FILL'] as $propID => $propInfo)
-			{
-?>
-					<input type="hidden" name="<? echo $arParams['PRODUCT_PROPS_VARIABLE']; ?>[<? echo $propID; ?>]" value="<? echo htmlspecialcharsbx($propInfo['ID']); ?>">
-<?
-				if (isset($arItem['PRODUCT_PROPERTIES'][$propID]))
-					unset($arItem['PRODUCT_PROPERTIES'][$propID]);
-			}
-		}
-		$emptyProductProperties = empty($arItem['PRODUCT_PROPERTIES']);
-?>
-				</div>
-<? endif ?>
-				<?
-				$bBuyButton      = false;
-				$bCompareButton  = false;
-				$bFavoriteButton = false;
-				$bQuantityInput  = false;
+				?><?
+				// ***************************************
+				// *********** BUY WITH PROPS ************
+				// ***************************************
+				if ($bBuyProps):?>
 
+				<div id="<? echo $arItemIDs['BASKET_PROP_DIV']; ?>"><?
+
+					if (!empty($arItem['PRODUCT_PROPERTIES_FILL']))
+					{
+						foreach ($arItem['PRODUCT_PROPERTIES_FILL'] as $propID => $propInfo)
+						{
+							?>
+
+					<input type="hidden" name="<? echo $arParams['PRODUCT_PROPS_VARIABLE']; ?>[<? echo $propID; ?>]" value="<? echo htmlspecialcharsbx($propInfo['ID']); ?>"><?
+
+							if (isset($arItem['PRODUCT_PROPERTIES'][$propID]))
+								unset($arItem['PRODUCT_PROPERTIES'][$propID]);
+						}
+					}
+					$emptyProductProperties = empty($arItem['PRODUCT_PROPERTIES']);
+					?>
+
+				</div><?
+				
+				endif ?>
+				<?
 				if ($bHoverMode) {
 					ob_start();
 				}
@@ -303,42 +258,38 @@ if ($bBuyProps):
 						data-placement="bottom"
 						title="<?=$arItem['CATALOG_MEASURE_NAME']?>">
 						<!-- parent must have class .quantity-counter! -->
-						<button type="button" class="btn-silver quantity-change decrease" id="<?=$arItemIDs['QUANTITY_DOWN']?>"><span class="minus">&ndash;</span></button>
+						<button type="button" class="btn-silver quantity-change decrease disabled" id="<?=$arItemIDs['QUANTITY_DOWN']?>"><span class="minus">&ndash;</span></button>
 						<input type="text" class="quantity-input textinput" value="<?=$arItem['CATALOG_MEASURE_RATIO']?>" id="<?=$arItemIDs['QUANTITY']?>">
 						<button type="button" class="btn-silver quantity-change increase" id="<?=$arItemIDs['QUANTITY_UP']?>"><span class="plus">+</span></button>
 					</form>
-					<? $bQuantityInput = true ?>
 				<?endif?>
+				
 				<div class="action-buttons" id="<?=$arItemIDs['BASKET_ACTIONS']?>">
-					<? $frame = $this->createFrame($arItemIDs['BASKET_ACTIONS'], false)->begin(CRZBitronic2Composite::insertCompositLoader()) ?>
 					<div class="xs-switch">
 						<i class="flaticon-arrow128 when-closed"></i>
 						<i class="flaticon-key22 when-opened"></i>
 					</div>
-					<?if ($arParams['DISPLAY_FAVORITE'] && $arItem['CATALOG_TYPE'] != 4 && !$arItem['bOffers']):?>
+					<?if ($arParams['DISPLAY_FAVORITE'] && !$arItem['bOffers']):?>
 						<button 
 							type="button" 
 							class="btn-action favorite" 
 							data-favorite-id="<?=$arItem['ID']?>" 
-							data-tooltip title="<?=GetMessage('BITRONIC2_BLOCKS_ADD_TO_FAVORITE')?>"
+							data-tooltip title="<?=GetMessage('BITRONIC2_SPEC_ADD_TO_FAVORITE')?>"
 							id="<?=$arItemIDs['FAVORITE_LINK']?>">
 							<i class="flaticon-heart3"></i>
 						</button>
-						<? $bFavoriteButton = true ?>
 					<?endif?>
-					<?if ($arParams['DISPLAY_COMPARE'] && $arItem['CATALOG_TYPE'] != 4):?>
+					<?if ($arParams['DISPLAY_COMPARE']):?>
 						<button 
 							type="button" 
 							class="btn-action compare" 
 							data-compare-id="<?=$arItem['ID']?>" 
-							data-tooltip title="<?=GetMessage('BITRONIC2_BLOCKS_ADD_TO_COMPARE')?>" 
+							data-tooltip title="<?=GetMessage('BITRONIC2_SPEC_ADD_TO_COMPARE')?>" 
 							id="<?=$arItemIDs['COMPARE_LINK']?>">
 							<i class="flaticon-balance3"></i>
 						</button>
-						<? $bCompareButton = true ?>
 					<?endif?>
 					<?if ($arParams['SHOW_BUY_BTN']):?>
-					<? $bBuyButton = true ?>
 					<div class="btn-buy-wrap text-only">
 						<?if($arItem['bOffers'] || ($bBuyProps && !$emptyProductProperties && $arItem['CAN_BUY'])):?>
 							<a href="<?=$arItem['DETAIL_PAGE_URL']?>" class="btn-action buy when-in-stock">
@@ -346,6 +297,7 @@ if ($bBuyProps):
 								<span class="text"><?=COption::GetOptionString($moduleId, 'button_text_offers')?></span>
 							</a>
 						<?else:?>
+							<?$frame = $this->createFrame()->begin(CRZBitronic2Composite::insertCompositLoader())?>
 							<?if($arItem['CAN_BUY']):?>
 								<button type="button" class="btn-action buy when-in-stock" id="<?=$arItemIDs['BUY_LINK']?>" data-product-id="<?=$arItem['ID']?>">
 									<i class="flaticon-shopping109"></i>
@@ -353,19 +305,18 @@ if ($bBuyProps):
 									<span class="text in-cart"><?=COption::GetOptionString($moduleId, 'button_text_incart')?></span>
 								</button>
 							<?elseif($availableOnRequest):?>
-								<button type="button" class="btn-action buy when-in-stock" data-measure-name="<?=$arItem['CATALOG_MEASURE_NAME']?>"
-								        data-product-id="<?=$arItem['ID']?>" data-toggle="modal" data-target="#modal_contact_product">
+								<button type="button" class="btn-action buy when-in-stock" data-toggle="modal" data-target="#modal_contact_product"
+									data-product-id="<?=$arItem['ID']?>" data-measure-name="<?=$arItem['CATALOG_MEASURE_NAME']?>">
 									<i class="flaticon-speech90"></i>
 									<span class="text"><?=COption::GetOptionString($moduleId, 'button_text_request')?></span>
 								</button>
 							<?else:?>
-								<span class="when-out-of-stock"><?= COption::GetOptionString($moduleId, 'button_text_na') ?></span>
-								<? $bBuyButton = false ?>
+								<span class="when-out-of-stock"><?=COption::GetOptionString($moduleId, 'button_text_na')?></span>
 							<?endif?>
+							<?$frame->end()?>
 						<?endif?>
 					</div>
 					<?endif?>
-					<? $frame->end() ?>
 				</div>
 				<? $frame = $this->createFrame()->begin(CRZBitronic2Composite::insertCompositLoader()) ?>
 					<?if($arItem['CAN_BUY'] && $bShowOneClick && !$arItem['bOffers'] && (!$bBuyProps || $emptyProductProperties)):?>
@@ -373,7 +324,7 @@ if ($bBuyProps):
 								data-toggle="modal" data-target="#modal_quick-buy" data-id="<?= $arItem['ID'] ?>"
 								data-props="<?= \Yenisite\Core\Tools::GetEncodedArParams($arParams['OFFER_TREE_PROPS']) ?>">
 							<i class="flaticon-shopping220"></i>
-							<span class="text"><?=GetMessage('BITRONIC2_BLOCKS_ONECLICK')?></span>
+							<span class="text"><?=GetMessage('BITRONIC2_SPEC_ONECLICK')?></span>
 						</button>
 					<?endif?>
 				<? $frame->end() ?>
@@ -383,23 +334,18 @@ if ($bBuyProps):
 				}
 				?>
 			</div>
-			<? if ($bBuyButton || $bCompareButton || $bFavoriteButton || $bQuantityInput || !empty($arItem['DISPLAY_PROPERTIES']) || !empty($arItem['PREVIEW_TEXT'])): ?>
-
 			<div class="description full-view">
 				<? if ($bHoverMode) {
 					echo $htmlButtons;
 				} ?>
-				<? if (!empty($arItem['DISPLAY_PROPERTIES'])) : ?>
 				<dl class="techdata">
 					<?foreach($arItem['DISPLAY_PROPERTIES'] as $arProp):?>
 						<dt><?=$arProp['NAME']?></dt>
-						<dd><?=strip_tags(is_array($arProp['DISPLAY_VALUE']) ? implode(' / ',$arProp['DISPLAY_VALUE']) : $arProp['DISPLAY_VALUE'])?></dd>
+						<dd><?=(is_array($arProp['VALUE']) ? implode(' / ',$arProp['VALUE']) : $arProp['VALUE'])?></dd>
 					<?endforeach?>
 				</dl>
-				<? endif ?>
 				<?=$arItem['PREVIEW_TEXT']?>
 			</div>
-			<? endif ?>
 				
 			<? // ADMIN INFO
 			include 'admin_info.php'; ?>
@@ -419,8 +365,6 @@ if ($bBuyProps):
 			'SHOW_CLOSE_POPUP' => ($arParams['SHOW_CLOSE_POPUP'] == 'Y'),
 			'DISPLAY_COMPARE' => $arParams['DISPLAY_COMPARE'],
 			'DISPLAY_FAVORITE' => $arParams['DISPLAY_FAVORITE'],
-			'REQUEST_URI' => $arItem['DETAIL_PAGE_URL'],//$_SERVER["REQUEST_URI"], need for AJAX to work on search page
-			'SCRIPT_NAME' => $_SERVER["SCRIPT_NAME"],
 			'DEFAULT_PICTURE' => array(
 				'PICTURE' => $arItem['PRODUCT_PREVIEW'],
 				'PICTURE_SECOND' => $arItem['PRODUCT_PREVIEW_SECOND']
@@ -494,35 +438,28 @@ if ($bBuyProps):
 				'FAVORITE_PATH' => $arParams['FAVORITE_PATH']
 			);
 		}
-		$jsString = ($jsString ?: '') . 'var ' . $strObName . ' = new JCCatalogItem('. CUtil::PhpToJSObject($arJSParams, false, true) .');';
 		?>
-
-	</div><!-- /.catalog-item-wrap --><?
-endforeach;
+		<script type="text/javascript">
+			var <? echo $strObName; ?> = new JCCatalogItem(<? echo CUtil::PhpToJSObject($arJSParams, false, true); ?>);
+		</script>
+	</div><!-- /.catalog-item-wrap -->
+<?endforeach?>
+</div><!-- /.content -->
+<script type="text/javascript">
+	$("#special-<?=$arParams['TAB_BLOCK']?>").toggleClass("availability-comments-enabled", <?=($arResult['AVAILABILITY_COMMENTS_ENABLED']?'true':'false')?>);
+</script>
+<div class="slider-controls-wrap controls">
+	<a class="slider-arrow prev">
+		<i class="flaticon-arrow133"></i>
+		<span class="sr-only"><?=GetMessage('BITRONIC2_SPEC_PAGEN_PREV')?></span>
+	</a><!--
+	--><div class="dots">
+	</div><!--
+	--><span class="numeric"></span><!--
+	--><a class="slider-arrow next">
+		<i class="flaticon-right20"></i>
+		<span class="sr-only"><?=GetMessage('BITRONIC2_SPEC_PAGEN_NEXT')?></span>
+	</a> 
+</div><!-- /.slider-controls-wrap -->
+<?
 // echo "<pre style='text-align:left;'>";print_r($arResult);echo "</pre>";
-
-?><script>
-	$("#catalog_section").toggleClass("availability-comments-enabled", <?=($arResult['AVAILABILITY_COMMENTS_ENABLED']?'true':'false')?>);
-</script><?
-
-$frame = $this->createFrame()->begin('');
-if ($arJsCache['file']):
-	$bytes = fwrite($arJsCache['file'], $jsString);
-	if ($bytes === false || $bytes != mb_strlen($jsString, 'windows-1251')) {
-		fclose($arJsCache['file']);
-		$arJsCache['file'] = false;
-	}
-endif;
-if(!$arJsCache['file']):
-
-?><script type="text/javascript">
-	<?=$jsString?>
-</script><?
-
-endif;
-$frame->end();
-
-if ($arJsCache['file']) {
-	$templateData['jsFile'] = $arJsCache['path'].'/'.$arJsCache['idJS'];
-	fclose($arJsCache['file']);
-}

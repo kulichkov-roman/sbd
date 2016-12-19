@@ -362,18 +362,21 @@ $bStores = $arParams["USE_STORE"] == "Y" && Bitrix\Main\ModuleManager::isModuleI
 						</span>
 						<?if($USER->isAdmin())
 						{
-							$arKvkData = array(
-								'order' => $arItem['B64_ORDER_PARAMS'],
-								'sign' => $arItem['B64_SIGN'],
-								'type' => 'full'
-							);
-							?>
-							<div>
-								<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
-									Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
-								</a>
-							</div>
-							<?
+							if($arItem['BUY_CREDIT_SHOW'])
+							{
+								$arKvkData = array(
+									'order' => $arItem['B64_ORDER_PARAMS'],
+									'sign' => $arItem['B64_SIGN'],
+									'type' => 'full'
+								);
+								?>
+								<div>
+									<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+										Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
+									</a>
+								</div>
+								<?
+							}
 						}
 						?>
 					</div>

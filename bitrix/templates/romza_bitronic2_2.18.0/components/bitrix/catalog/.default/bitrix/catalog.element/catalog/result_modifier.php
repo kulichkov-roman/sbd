@@ -1070,5 +1070,11 @@ if($USER->isAdmin())
 	$arResult['B64_SIGN'] = $sign;
 	$arResult['PRICE_CREDIT'] = $price * 13 / 100;
 	$arResult['PRICE_CREDIT'] = ceil($arResult['PRICE_CREDIT'] / 100) * 100 - 1;
+
+    $arResult['BUY_CREDIT_SHOW'] = false;
+    if($price > IntVal(COption::GetOptionString('askaron.settings', 'UF_CREDIT_MIN_PRICE')))
+    {
+        $arResult['BUY_CREDIT_SHOW'] = true;
+    }
 }
 
