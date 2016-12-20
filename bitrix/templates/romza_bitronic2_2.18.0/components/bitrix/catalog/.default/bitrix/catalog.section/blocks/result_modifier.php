@@ -317,7 +317,7 @@ if($USER->isAdmin())
 		return $result;
 	}
 
-	foreach ($arResult['TABS'] as &$arItem)
+	foreach ($arResult['ITEMS'] as &$arItem)
 	{
 		if($arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'])
 		{
