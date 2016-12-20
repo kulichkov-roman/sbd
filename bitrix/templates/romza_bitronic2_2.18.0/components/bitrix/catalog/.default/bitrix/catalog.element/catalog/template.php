@@ -17,6 +17,8 @@ use Bitrix\Main\ModuleManager;
 // @var $moduleCode
 include $_SERVER['DOCUMENT_ROOT'] . SITE_TEMPLATE_PATH . '/include/module_code.php';
 
+$configuration = \Bitrix\Main\Config\Configuration::getInstance();
+
 $this->setFrameMode(true);
 $compositeLoader = CRZBitronic2Composite::insertCompositLoader();
 $templateLibrary = array();
@@ -489,7 +491,7 @@ endif
                                             ?>
                                             <a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
                                                 Купить в кредит от <b><?=$arResult['PRICE_CREDIT']?> р./месяц</b>
-                                            </a>
+                                            </a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
                                             <?
                                         }
 									}

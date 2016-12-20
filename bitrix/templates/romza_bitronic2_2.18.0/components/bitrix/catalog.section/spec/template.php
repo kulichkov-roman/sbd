@@ -5,6 +5,8 @@ use Bitrix\Main\ModuleManager;
 //no whitespace in this file!!!!!!
 $this->setFrameMode(true);
 
+$configuration = \Bitrix\Main\Config\Configuration::getInstance();
+
 // @var $moduleId
 // @var $moduleCode
 include $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH.'/include/debug_info.php';
@@ -169,7 +171,7 @@ $bHoverMode = $arParams['HOVER-MODE'] == 'detailed-expand';
 							<div>
 								<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
 									Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
-								</a>
+								</a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
 							</div>
 							<?
 						}

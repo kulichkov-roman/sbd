@@ -3,6 +3,9 @@
 	font-size: 11px;
 	color: #000 !important;
 }
+.kvk-question {
+	color: #000 !important;
+}
 .js-kvk-button:hover{
 	text-decoration: none !important;
 }
