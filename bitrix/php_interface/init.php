@@ -1,10 +1,11 @@
 <?
 //-- Конфигурация сайта
 $configuration = \Bitrix\Main\Config\Configuration::getInstance();
-$configuration->add('partnerId', 'a06m00000018y7rAAA');
-$configuration->add('partnerOrderId', 'test_order_'.uniqid());
-$configuration->add('secretKeyId', 'grid-secret-18y7r72a');
+$configuration->add('partnerId', 'a06b0000023j2eTAAQ');
+$configuration->add('partnerOrderId', 'order_'.uniqid());
+$configuration->add('secretKeyId', 'sibdroid-secret-3j2eT2bb');
 $configuration->add('catalogIBlockId', 6);
+$configuration->add('creditPageUrl', '/about/kredit/');
 
 //-- Добавление обработчика события
 
