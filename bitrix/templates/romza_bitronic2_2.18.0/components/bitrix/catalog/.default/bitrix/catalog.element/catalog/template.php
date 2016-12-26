@@ -479,22 +479,20 @@ endif
 										?>
 										<? $frame->end() ?>
 									</div>
-									<?if($USER->isAdmin())
-									{
-                                        if($arResult['BUY_CREDIT_SHOW'])
-                                        {
-                                            $arKvkData = array(
-                                                'order' => $arResult['B64_ORDER_PARAMS'],
-                                                'sign' => $arResult['B64_SIGN'],
-                                                'type' => 'full'
-                                            );
-                                            ?>
-                                            <a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
-                                                Купить в кредит от <b><?=$arResult['PRICE_CREDIT']?> р./месяц</b>
-                                            </a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
-                                            <?
-                                        }
-									}
+									<?
+                                    if($arResult['BUY_CREDIT_SHOW'])
+                                    {
+                                        $arKvkData = array(
+                                            'order' => $arResult['B64_ORDER_PARAMS'],
+                                            'sign' => $arResult['B64_SIGN'],
+                                            'type' => 'full'
+                                        );
+                                        ?>
+                                        <a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+                                            Купить в кредит от <b><?=$arResult['PRICE_CREDIT']?> р./месяц</b>
+                                        </a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
+                                        <?
+                                    }
 									?>
 <?
 $frame = $this->createFrame()->begin('');

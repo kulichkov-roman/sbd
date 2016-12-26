@@ -227,122 +227,122 @@ if ($arResult['HAS_FOR_ORDER']) {
 $arResult['AVAILABILITY_COMMENTS_ENABLED'] = !empty($fotContent);
 unset($fotContent);
 
-if($USER->isAdmin())
+/**
+ * Кнопка купить в кредит
+ */
+$arUserItem = array();
+$rsUser = \CUser::GetByID($USER->GetID());
+$arUserItem = $rsUser->Fetch();
+
+$configuration = \Bitrix\Main\Config\Configuration::getInstance();
+
+$arSection = array();
+
+if(!empty($arResult['ID']))
 {
-	$arUserItem = array();
-	$rsUser = \CUser::GetByID($USER->GetID());
-	$arUserItem = $rsUser->Fetch();
+	$obCache = new CPHPCache();
+	$cacheLifeTime = 2628000;
+	$cacheID = 'arSection'.$arResult['ID'];
+	$cachePath = '/yt/'.$cacheID;
 
-	$configuration = \Bitrix\Main\Config\Configuration::getInstance();
-
-	$arSection = array();
-
-	if(!empty($arResult['ID']))
+	if($obCache->InitCache($cacheLifeTime, $cacheID, $cachePath))
 	{
-		$obCache = new CPHPCache();
-		$cacheLifeTime = 2628000;
-		$cacheID = 'arSection'.$arResult['ID'];
-		$cachePath = '/yt/'.$cacheID;
-
-		if($obCache->InitCache($cacheLifeTime, $cacheID, $cachePath))
-		{
-			$vars = $obCache->GetVars();
-			$arSection = $vars['arSection'];
-		}
-		elseif($obCache->StartDataCache())
-		{
-			$arSectionSort = array();
-			$arSectionSelect = array(
-				'ID',
-				'NAME'
-			);
-			$arSectionFilter = array(
-				'ID' 		=> $arResult['ID'],
-				'IBLOCK_ID' => $configuration->get('catalogIBlockId'),
-				'ACTIVE'    => 'Y',
-			);
-
-			$rsSection = \CIBlockSection::GetList(
-				$arSectionSort,
-				$arSectionFilter,
-				false,
-				$arSectionSelect,
-				false
-			);
-
-			if($arSectionItem = $rsSection->Fetch())
-			{
-				$arSection = $arSectionItem;
-			}
-			$obCache->EndDataCache(array('arSection' => $arSection));
-		}
+		$vars = $obCache->GetVars();
+		$arSection = $vars['arSection'];
 	}
-
-	if(empty($arSection))
+	elseif($obCache->StartDataCache())
 	{
-		$arSection = array(
-			'NAME' => ''
+		$arSectionSort = array();
+		$arSectionSelect = array(
+			'ID',
+			'NAME'
 		);
-	}
-
-	function getSignMessage1($message, $secretPhrase)
-	{
-		$message = $message.$secretPhrase;
-		$result = md5($message).sha1($message);
-		for ($i = 0; $i < 1102; $i++)
-		{
-			$result = md5($result);
-		}
-		return $result;
-	}
-
-	foreach ($arResult['ITEMS'] as &$arItem)
-	{
-		if($arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'])
-		{
-			$price = $arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'];
-		}
-		else
-		{
-			$price = $arItem['PRICES']['BASE']['VALUE'];
-		}
-
-		$arOrder = array(
-			'items' => array(
-				array(
-					'title' => $arItem['NAME'],
-					'category' => $arItem['NAME'],
-					'qty' => 1,
-					'price' => $price
-				),
-			),
-			'details' => array(
-				'firstname' => $arUserItem['NAME'],
-				'lastname' => $arUserItem['LAST_NAME'],
-				'middlename' => $arUserItem['SECOND_NAME'],
-				'email' => $arUserItem['EMAIL']
-			),
-			'partnerId' => $configuration->get('partnerId'),
-			'partnerOrderId' => $configuration->get('partnerOrderId'),
+		$arSectionFilter = array(
+			'ID' 		=> $arResult['ID'],
+			'IBLOCK_ID' => $configuration->get('catalogIBlockId'),
+			'ACTIVE'    => 'Y',
 		);
 
-		$json = json_encode($arOrder);
-		$base64 = base64_encode($json);
+		$rsSection = \CIBlockSection::GetList(
+			$arSectionSort,
+			$arSectionFilter,
+			false,
+			$arSectionSelect,
+			false
+		);
 
-		$secret = $configuration->get('secretKeyId');
-
-		$sign = getSignMessage1($base64, $secret);
-
-		$arItem['B64_ORDER_PARAMS'] = $base64;
-		$arItem['B64_SIGN'] = $sign;
-		$arItem['PRICE_CREDIT'] = $price * 13 / 100;
-		$arItem['PRICE_CREDIT'] = ceil($arItem['PRICE_CREDIT'] / 100) * 100 - 1;
-
-		$arItem['BUY_CREDIT_SHOW'] = false;
-		if($price > IntVal(COption::GetOptionString('askaron.settings', 'UF_CREDIT_MIN_PRICE')))
+		if($arSectionItem = $rsSection->Fetch())
 		{
-			$arItem['BUY_CREDIT_SHOW'] = true;
+			$arSection = $arSectionItem;
 		}
+		$obCache->EndDataCache(array('arSection' => $arSection));
 	}
-	unset($arItem);
 }
+
+if(empty($arSection))
+{
+	$arSection = array(
+		'NAME' => ''
+	);
+}
+
+function getSignMessage1($message, $secretPhrase)
+{
+	$message = $message.$secretPhrase;
+	$result = md5($message).sha1($message);
+	for ($i = 0; $i < 1102; $i++)
+	{
+		$result = md5($result);
+	}
+	return $result;
+}
+
+foreach ($arResult['ITEMS'] as &$arItem)
+{
+	if($arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'])
+	{
+		$price = $arItem['PRICES']['BASE']['DISCOUNT_VALUE_NOVAT'];
+	}
+	else
+	{
+		$price = $arItem['PRICES']['BASE']['VALUE'];
+	}
+
+	$arOrder = array(
+		'items' => array(
+			array(
+				'title' => $arItem['NAME'],
+				'category' => $arItem['NAME'],
+				'qty' => 1,
+				'price' => $price
+			),
+		),
+		'details' => array(
+			'firstname' => $arUserItem['NAME'],
+			'lastname' => $arUserItem['LAST_NAME'],
+			'middlename' => $arUserItem['SECOND_NAME'],
+			'email' => $arUserItem['EMAIL']
+		),
+		'partnerId' => $configuration->get('partnerId'),
+		'partnerOrderId' => $configuration->get('partnerOrderId'),
+	);
+
+	$json = json_encode($arOrder);
+	$base64 = base64_encode($json);
+
+	$secret = $configuration->get('secretKeyId');
+
+	$sign = getSignMessage1($base64, $secret);
+
+	$arItem['B64_ORDER_PARAMS'] = $base64;
+	$arItem['B64_SIGN'] = $sign;
+	$arItem['PRICE_CREDIT'] = $price * 13 / 100;
+	$arItem['PRICE_CREDIT'] = ceil($arItem['PRICE_CREDIT'] / 100) * 100 - 1;
+
+	$arItem['BUY_CREDIT_SHOW'] = false;
+	if($price > IntVal(COption::GetOptionString('askaron.settings', 'UF_CREDIT_MIN_PRICE')))
+	{
+		$arItem['BUY_CREDIT_SHOW'] = true;
+	}
+}
+unset($arItem);

@@ -203,23 +203,21 @@ foreach($arResult['ITEMS'] as $arItem):
 								<?=CRZBitronic2CatalogUtils::getElementPriceFormat($arItem['MIN_PRICE']['CURRENCY'], $arItem['MIN_PRICE']['DISCOUNT_VALUE'], $arItem['MIN_PRICE']['PRINT_DISCOUNT_VALUE']);?>
 						</span>
 					</div>
-					<?if($USER->isAdmin())
+					<?
+					if($arItem['BUY_CREDIT_SHOW'])
 					{
-						if($arItem['BUY_CREDIT_SHOW'])
-						{
-							$arKvkData = array(
-								'order' => $arItem['B64_ORDER_PARAMS'],
-								'sign' => $arItem['B64_SIGN'],
-								'type' => 'full'
-							);
-							?>
-							<div>
-								<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
-									Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
-								</a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
-							</div>
-							<?
-						}
+						$arKvkData = array(
+							'order' => $arItem['B64_ORDER_PARAMS'],
+							'sign' => $arItem['B64_SIGN'],
+							'type' => 'full'
+						);
+						?>
+						<div>
+							<a href="javascript:void(0)" class="js-kvk-button" data-kvk='<?=json_encode($arKvkData);?>'>
+								Купить в кредит от <b><?=$arItem['PRICE_CREDIT']?> р./месяц</b>
+							</a><a class="kvk-question" target="_blank" href="<?=$configuration->get('creditPageUrl')?>"><sup>?</sup></a>
+						</div>
+						<?
 					}
 					?>
 					<div id="<?= $arItemIDs['PRICE_ADDITIONAL'] ?>" class="additional-price-container <?=(empty($availableOnRequest)&&CRZBitronic2Settings::isPro()?'':' invisible')?>"><?
