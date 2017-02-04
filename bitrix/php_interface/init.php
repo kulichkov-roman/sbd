@@ -30,22 +30,40 @@ if(!function_exists('setOptionsForProductHandler'))
   {
     $configuration = Configuration::getInstance();
 
-    if($arFields['IBLOCK_ID'] == $configuration->get('catalogIBlockId'))
+    if(
+        $arFields['IBLOCK_ID'] == $configuration->get('catalogIBlockId') &&
+        !empty($arFields['IBLOCK_SECTION'])
+    )
     {
-      $arOptions = array('SERVICE' => Option::get('askaron.settings', 'UF_PHONE_OPTIONS'));
+      $rsNav = \CIBlockSection::GetNavChain(
+          false,
+          array_shift($arFields['IBLOCK_SECTION'])
+      );
 
-      if(!empty($arOptions))
+      $arNav = array();
+      while($arNavItem = $rsNav->Fetch())
       {
-        \CIBlockElement::SetPropertyValuesEx(
-            $arFields['ID'],
-            $arFields['IBLOCK_ID'],
-            $arOptions
-        );
+        $arNav[] = $arNavItem['ID'];
+      }
+
+      $rootSecId = array_shift($arNav);
+
+      if($rootSecId == $configuration->get('catalogPhoneSectionId'))
+      {
+        $arOptions = array('SERVICE' => Option::get('askaron.settings', 'UF_PHONE_OPTIONS'));
+
+        if(!empty($arOptions))
+        {
+          \CIBlockElement::SetPropertyValuesEx(
+              $arFields['ID'],
+              $arFields['IBLOCK_ID'],
+              $arOptions
+          );
+        }
       }
     }
   }
 }
-
 
 //-- Добавление обработчика события
 
