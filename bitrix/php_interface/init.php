@@ -1,11 +1,69 @@
 <?
 //-- Конфигурация сайта
-$configuration = \Bitrix\Main\Config\Configuration::getInstance();
+use \Bitrix\Main\EventManager;
+use \Bitrix\Main\Config\Configuration;
+use \Bitrix\Main\Config\Option;
+
+$configuration = Configuration::getInstance();
+$eventManager = EventManager::getInstance();
+
 $configuration->add('partnerId', 'a06b0000023j2eTAAQ');
 $configuration->add('partnerOrderId', 'order_'.uniqid());
 $configuration->add('secretKeyId', 'sibdroid-secret-3j2eT2bb');
 $configuration->add('catalogIBlockId', 6);
+$configuration->add('catalogPhoneSectionId', 52);
+$configuration->add('optionsIBlockId', 5);
 $configuration->add('creditPageUrl', '/about/kredit/');
+
+/*
+ * Установка опций в карточки смартфонов
+ * */
+$eventManager->addEventHandler(
+    'iblock',
+    'OnAfterIBlockElementAdd',
+    'setOptionsForProductHandler'
+);
+
+if(!function_exists('setOptionsForProductHandler'))
+{
+  function setOptionsForProductHandler(&$arFields)
+  {
+    $configuration = Configuration::getInstance();
+
+    if(
+        $arFields['IBLOCK_ID'] == $configuration->get('catalogIBlockId') &&
+        !empty($arFields['IBLOCK_SECTION'])
+    )
+    {
+      $rsNav = \CIBlockSection::GetNavChain(
+          false,
+          array_shift($arFields['IBLOCK_SECTION'])
+      );
+
+      $arNav = array();
+      while($arNavItem = $rsNav->Fetch())
+      {
+        $arNav[] = $arNavItem['ID'];
+      }
+
+      $rootSecId = array_shift($arNav);
+
+      if($rootSecId == $configuration->get('catalogPhoneSectionId'))
+      {
+        $arOptions = array('SERVICE' => Option::get('askaron.settings', 'UF_PHONE_OPTIONS'));
+
+        if(!empty($arOptions))
+        {
+          \CIBlockElement::SetPropertyValuesEx(
+              $arFields['ID'],
+              $arFields['IBLOCK_ID'],
+              $arOptions
+          );
+        }
+      }
+    }
+  }
+}
 
 //-- Добавление обработчика события
 
