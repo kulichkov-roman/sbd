@@ -14,9 +14,10 @@ $configuration->add('catalogIBlockId', 6);
 $configuration->add('catalogPhoneSectionId', 52);
 $configuration->add('optionsIBlockId', 5);
 $configuration->add('creditPageUrl', '/about/kredit/');
+$configuration->add('optionsPlusAdminPageUrl', '/bitrix/admin/askaron_settings_edit.php?ok=Y&lang=ru');
 
 /*
- * Установка опций в карточки смартфонов
+ * Событие для установка опций в карточки смартфонов
  * */
 $eventManager->addEventHandler(
     'iblock',
@@ -24,6 +25,53 @@ $eventManager->addEventHandler(
     'setOptionsForProductHandler'
 );
 
+/*
+ * Событие для добавление меню для запуска скрипта для установки опций
+ * */
+$eventManager->addEventHandler(
+    'main',
+    'OnBuildGlobalMenu',
+    'addSetOptionsPhoneMenu'
+);
+
+/*
+ * Добавление меню для запуска скрипта для установки опций
+ * */
+if(!function_exists('addSetOptionsPhoneMenu'))
+{
+  function addSetOptionsPhoneMenu(&$globalMenu, &$moduleMenu)
+  {
+    $parent = null;
+
+    for ($i = 0; $i < count($moduleMenu); $i++) 
+    {
+      if ($moduleMenu[$i]['items_id'] == 'menu_system') 
+      {
+        for ($j = 0; $j < count($moduleMenu[$i]['items']); $j++) 
+        {
+          if ($moduleMenu[$i]['items'][$j]['items_id'] == 'menu_module_settings') 
+          {
+            $parent = &$moduleMenu[$i]['items'][$j];
+            break;
+          }
+        }
+      }
+    }
+
+    if ($parent === null) return;
+
+    $parent['items'][] = array(
+        'text' => 'Установка опций для смартфонов',
+        'url' => 'yt_set_options_phone.php?lang=ru',
+        'more_url' => array(),
+        'title' => 'Установка опций для смартфонов'
+    );
+  }
+}
+
+/*
+ * Установка опций в карточки смартфонов
+ * */
 if(!function_exists('setOptionsForProductHandler'))
 {
   function setOptionsForProductHandler(&$arFields)
