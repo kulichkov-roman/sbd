@@ -1,0 +1,1 @@
+<img alt="Sibdroid" src="<?=SITE_TEMPLATE_PATH?>/new_img/svg/logo.svg">

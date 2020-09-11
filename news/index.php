@@ -1,0 +1,127 @@
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+LocalRedirect(str_replace('/news/', '/blog/', $_SERVER['SCRIPT_URL']), true, "301 Moved permanently");
+$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH . "/new_css/style_1.css");
+?>
+<style>
+#goodsTab{display:none}
+</style>
+<section class="main-block">
+<?$APPLICATION->IncludeComponent(
+	"bitrix:news", 
+	"news", 
+	array(
+		"IBLOCK_TYPE" => "news",
+		"IBLOCK_ID" => "1",
+		"RESIZER_NEWS_LIST" => "14",
+		"RESIZER_NEWS_DETAIL" => "15",
+		"NEWS_COUNT" => "10",
+		"USE_SEARCH" => "N",
+		"USE_RSS" => "N",
+		"NUM_NEWS" => "20",
+		"NUM_DAYS" => "30",
+		"YANDEX" => "N",
+		"USE_RATING" => "N",
+		"USE_CATEGORIES" => "N",
+		"USE_REVIEW" => "N",
+		"USE_FILTER" => "N",
+		"SORT_BY1" => "ACTIVE_FROM",
+		"SORT_ORDER1" => "DESC",
+		"SORT_BY2" => "SORT",
+		"SORT_ORDER2" => "ASC",
+		"CHECK_DATES" => "Y",
+		"SEF_MODE" => "Y",
+		"SEF_FOLDER" => "/news/",
+		"AJAX_MODE" => "N",
+		"AJAX_OPTION_JUMP" => "N",
+		"AJAX_OPTION_STYLE" => "N",
+		"AJAX_OPTION_HISTORY" => "N",
+		"CACHE_TYPE" => "A",
+		"CACHE_TIME" => "36000000",
+		"CACHE_FILTER" => "N",
+		"CACHE_GROUPS" => "N",
+		"SET_STATUS_404" => "Y",
+		"SET_TITLE" => "N",
+		"INCLUDE_IBLOCK_INTO_CHAIN" => "N",
+		"ADD_SECTIONS_CHAIN" => "N",
+		"ADD_ELEMENT_CHAIN" => "Y",
+		"USE_PERMISSIONS" => "N",
+		"PREVIEW_TRUNCATE_LEN" => "500",
+		"LIST_ACTIVE_DATE_FORMAT" => "j F Y",
+		"LIST_FIELD_CODE" => array(
+			0 => "TAGS",
+			1 => "DATE_ACTIVE_FROM",
+			2 => "DATE_ACTIVE_TO",
+			3 => "RATING_TOTAL_VALUE",
+			4 => "RATING_TOTAL_VOTES",
+			5 => "RATING_TOTAL_POSITIVE_VOTES",
+			6 => "RATING_TOTAL_NEGATIVE_VOTES",
+			7 => "RATING_USER_VOTE_VALUE",
+			8 => "",
+		),
+		"LIST_PROPERTY_CODE" => array(
+			0 => "",
+			1 => "",
+		),
+		"HIDE_LINK_WHEN_NO_DETAIL" => "N",
+		"DISPLAY_NAME" => "Y",
+		"META_KEYWORDS" => "-",
+		"META_DESCRIPTION" => "-",
+		"BROWSER_TITLE" => "-",
+		"DETAIL_ACTIVE_DATE_FORMAT" => "j F Y",
+		"DETAIL_FIELD_CODE" => array(
+			0 => "TAGS",
+			1 => "PREVIEW_PICTURE",
+			2 => "SHOW_COUNTER",
+			3 => "",
+		),
+		"DETAIL_PROPERTY_CODE" => array(
+			0 => "",
+			1 => "",
+		),
+		"DETAIL_DISPLAY_TOP_PAGER" => "N",
+		"DETAIL_DISPLAY_BOTTOM_PAGER" => "Y",
+		"DETAIL_PAGER_TITLE" => "",
+		"DETAIL_PAGER_TEMPLATE" => "",
+		"DETAIL_PAGER_SHOW_ALL" => "Y",
+		"PAGER_TEMPLATE" => "sib_default",
+		"DISPLAY_TOP_PAGER" => "N",
+		"DISPLAY_BOTTOM_PAGER" => "Y",
+		"PAGER_TITLE" => "Новости",
+		"PAGER_SHOW_ALWAYS" => "N",
+		"PAGER_DESC_NUMBERING" => "N",
+		"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
+		"PAGER_SHOW_ALL" => "Y",
+		"DISPLAY_DATE" => "Y",
+		"DISPLAY_PICTURE" => "Y",
+		"DISPLAY_PREVIEW_TEXT" => "Y",
+		"USE_SHARE" => "N",
+		"AJAX_OPTION_ADDITIONAL" => "",
+		"COMPONENT_TEMPLATE" => "news",
+		"SET_LAST_MODIFIED" => "N",
+		"RELATED_HEADER_TEXT" => "Связанные товары",
+		"DETAIL_SET_CANONICAL_URL" => "N",
+		"PAGER_BASE_LINK_ENABLE" => "N",
+		"SHOW_404" => "N",
+		"MESSAGE_404" => "",
+		"PROP_FOR_DISCOUNT" => "-",
+		"PROP_FOR_BANNER" => "-",
+		"COUNT_ELEMENT_ACTIONS" => "10",
+		"STRICT_SECTION_CHECK" => "N",
+		"ACTION_TEXT" => "Товары учавствующие в акции",
+		"COMPOSITE_FRAME_MODE" => "A",
+		"COMPOSITE_FRAME_TYPE" => "AUTO",
+		"SEF_URL_TEMPLATES" => array(
+			"news" => "",
+			"section" => "#SECTION_CODE#/",
+			"detail" => "#ELEMENT_CODE#.html",
+		)
+	),
+	false,
+	array(
+		"ACTIVE_COMPONENT" => "Y"
+	)
+);
+?>
+</section>
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

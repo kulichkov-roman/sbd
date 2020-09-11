@@ -1,0 +1,4 @@
+<?
+$MESS["BITRONIC2_TEMPLATE_NAME"] = "Sibdroid.ru";
+$MESS["BITRONIC2_TEMPLATE_DESCRIPTION"] = "Sibdroid.ru";
+?>

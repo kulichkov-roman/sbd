@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sibdroid Sphinx Search</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+</head>
+<body>
+
+<table id="example" class="display" style="width:100%">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>вес</th>
+        <th>название</th>
+        <th>наличие</th>
+        <th>сортировка</th>
+        <th>категория1</th>
+        <th>катсорт1</th>
+        <th>категория2</th>
+        <th>катсорт2</th>
+        <th>категория3</th>
+        <th>катсорт3</th>
+        <th>категория4</th>
+        <th>катсорт4</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <th>id</th>
+        <th>вес</th>
+        <th>название</th>
+        <th>наличие</th>
+        <th>сортировка</th>
+        <th>категория1</th>
+        <th>катсорт1</th>
+        <th>категория2</th>
+        <th>катсорт2</th>
+        <th>категория3</th>
+        <th>катсорт3</th>
+        <th>категория4</th>
+        <th>катсорт4</th>
+    </tr>
+    </tfoot>
+</table>
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                "ajax": "/sphinx/search.php?json=1",
+                "processing": true,
+                "serverSide": true,
+                "paging": false,
+                "ordering":  false,
+                "columns": [
+                    { "data": "id" },
+                    { "data": "weight" },
+                    { "data": "name" },
+                    { "data": "ex" },
+                    { "data": "sort" },
+                    { "data": "catname1" },
+                    { "data": "catsort1" },
+                    { "data": "catname2" },
+                    { "data": "catsort2" },
+                    { "data": "catname3" },
+                    { "data": "catsort3" },
+                    { "data": "catname4" },
+                    { "data": "catsort4" }
+                ]
+            } );
+        } );
+    });
+</script>
+</body>
+</html>

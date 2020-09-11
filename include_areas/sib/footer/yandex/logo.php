@@ -1,0 +1,1 @@
+<img alt="" src="<?=SITE_TEMPLATE_PATH?>/new_img/yandex-footer.png">

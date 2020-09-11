@@ -11,7 +11,9 @@ if(
     $_SERVER['REMOTE_ADDR'] == '195.16.92.102'   ||
     $_SERVER['REMOTE_ADDR'] == '217.107.127.36'  ||
     $_SERVER['REMOTE_ADDR'] == '188.162.248.74'  ||
-    $_SERVER['REMOTE_ADDR'] == '213.138.81.77'
+    $_SERVER['REMOTE_ADDR'] == '213.138.81.77'   ||
+    $_SERVER['REMOTE_ADDR'] == '37.193.112.163'   ||
+	$_SERVER['REMOTE_ADDR'] == '217.71.131.244'
 )
 {
     global $USER;

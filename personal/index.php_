@@ -1,0 +1,20 @@
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetTitle("Личный кабинет");
+
+if(!$USER->IsAuthorized())
+{
+	$APPLICATION->AuthForm("");
+	return;
+}
+?>
+<main class="container account-page account-settings">
+	<h1><?$APPLICATION->ShowTitle()?></h1>
+	<div class="account row">
+		<?include 'left_menu.php';?>
+		<div class="account-content col-xs-12 col-sm-9 col-xl-10">
+			<p>Это Ваш личный кабинет. Для навигации Вы можете воспользоваться меню личного кабинета, которое находится слева на странице</p>
+		</div>
+	</div>
+</main>
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

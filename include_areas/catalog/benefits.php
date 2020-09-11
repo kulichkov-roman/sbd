@@ -1,22 +1,24 @@
-<div class="row benefits hidden-xs hidden-sm wow fadeIn">
-	<div class="benefit col-md-4">
+<div class="row benefits hidden-xs wow fadeIn">
+	<div class="benefit">
 		<div class="img-wrap">
-			<span data-picture data-alt="Доставляем!">
-			<span data-src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/delivery.png"></span>
+			<span data-picture data-alt="Качественный сервис!">
+			<span data-src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/OK.png"></span>
 			<span data-src="" data-media="(max-width: 767px)"></span>
 
 			<!-- Fallback content for non-JS browsers. Same img src as the initial, unqualified source element. -->
 				<noscript>
-				 	<img src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/delivery.png" alt="Доставляем!">
+				 	<img src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/OK.png" alt="Качественный сервис!">
 				</noscript>
 			</span>
 		</div>
 		<div class="content">
-			<header>Бесплатная доставка</header>
-                          <p>По Новосибирску бесплатная доставка в день заказа, по России до ТК</p>
+			<header align="center">Качественный сервис</header>
+            <p align="center">Профессиональные консультации по любым вопросам.</p>
 		</div>
-	</div><div class="benefit col-md-4">
-		<div class="img-wrap">
+	</div>
+
+	<? /*<div class="benefit" style="display:none">
+	<div class="img-wrap">
 			<span data-picture data-alt="Гарантируем!">
 				<span data-src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/OK.png"></span>
 				<span data-src="" data-media="(max-width: 767px)"></span>
@@ -31,7 +33,26 @@
 			<header>Качественный сервис</header>
                         <p>Профессиональные консультации по любым вопросам.    </p>
 		</div>
-	</div><div class="benefit col-md-4">
+	</div>
+
+	*/ ?>
+		<?
+	global $garantiya;
+	if(!empty($garantiya["VALUE"])):
+
+		switch($garantiya["VALUE"]){
+			
+			case 1:
+				$garantiya["VALUE"] = "1 год";
+				break;
+
+			case 14:
+				$garantiya["VALUE"] = "2 недели";
+				break;
+		}
+		
+		?>
+	<div class="benefit">
 		<div class="img-wrap">
 			<span data-picture data-alt="Обмениваем!">
 			<span data-src="<?=SITE_TEMPLATE_PATH?>/pictures/benefits/exchange.png"></span>
@@ -44,8 +65,9 @@
 			</span>		
 		</div>
 		<div class="content">
-			<header>Гарантия 1 год</header>
-                        <p>На каждый товар выдается гарантийный талон сроком на 1 год </p>
+			<header align="center">Гарантия <?=$garantiya["VALUE"]?></header>
+                        <p align="center">На данный товар выдается гарантийный талон сроком на <?=$garantiya["VALUE"]?> </p>
 		</div>
 	</div>
+	<?endif;?>
 </div>

@@ -1,0 +1,44 @@
+/* base variables */
+/* color variables */
+/* title variables */
+.title-1 {
+  font: bold 46px/1 'OpenSans', sans-serif;
+  letter-spacing: 0.2px;
+}
+.title-2 {
+  font: normal 26px/1.2 'RobotoCond', sans-serif;
+  letter-spacing: 0.5px;
+}
+.title-3 {
+  font: 600 18px/1.15 'OpenSans', sans-serif;
+  letter-spacing: 0.45px;
+}
+.title-4 {
+  font: 600 18px/1.35 'OpenSans', sans-serif;
+  letter-spacing: 0.45px;
+}
+.title-5 {
+  font: bold 16px/1.25 'OpenSans', sans-serif;
+  letter-spacing: 0.4px;
+}
+.title-6 {
+  font: 600 16px/1.25 'OpenSans', sans-serif;
+  letter-spacing: 0.4px;
+}
+/* text variables */
+.text-1 {
+  font: normal 13px/1.4 'OpenSans', sans-serif;
+  letter-spacing: 0.4px;
+}
+.text-2 {
+  font: normal 15px/1.4 'OpenSans', sans-serif;
+  letter-spacing: 0.35px;
+}
+.text-3 {
+  font: normal 14px/1.45 'OpenSans', sans-serif;
+  letter-spacing: 0.35px;
+}
+.text-4 {
+  font: normal 12px/1.7 'OpenSans', sans-serif;
+  letter-spacing: 0.3px;
+}

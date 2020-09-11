@@ -1,0 +1,24 @@
+.js-kvk-button{
+	text-decoration: underline !important;
+	font-size: 11px;
+	color: #000 !important;
+}
+.kvk-question {
+	color: #000 !important;
+}
+.js-kvk-button:hover{
+	text-decoration: none !important;
+}
+.catalog-item .js-kvk-button{
+	display: inline-block;
+    margin-bottom: 7px;
+}
+.info-tag-custom {
+	background-color: #3f86c9 !important;
+}
+
+.availability-comments-enabled .blocks-item .main-data>.availability-info, .availability-comments-enabled .hurry-item .main-data>.availability-info {
+    display: block;
+    height: 45px;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,1 @@
+<img alt="alt" src="<?=SITE_TEMPLATE_PATH?>/new_img/svg/logo.svg">

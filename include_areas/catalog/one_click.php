@@ -1,7 +1,8 @@
 <?
 if(Bitrix\Main\Loader::includeModule('yenisite.oneclick'))
 {
-	$APPLICATION->IncludeComponent(
+	global $rz_b2_options;
+        $APPLICATION->IncludeComponent(
 	"yenisite:oneclick.buy", 
 	"bitronic2", 
 	array(
@@ -16,13 +17,14 @@ if(Bitrix\Main\Loader::includeModule('yenisite.oneclick'))
 			2 => "PHONE",
 		),
 		"REQ_FIELDS" => array(
-			0 => "PHONE",
+			0 => "FIO",
+			1 => "EMAIL",
+			2 => "PHONE",
 		),
 		"ALLOW_AUTO_REGISTER" => "Y",
-		"USE_CAPTCHA" => "Y",
 		"MESSAGE_OK" => "Ваш заказ принят, его номер - #ID#. Менеджер свяжется с вами в ближайшее время. Спасибо что выбрали нас!",
-		"PAY_SYSTEM_ID" => "0",
-		"DELIVERY_ID" => "0",
+		"PAY_SYSTEM_ID" => "11",
+		"DELIVERY_ID" => "412",
 		"AS_EMAIL" => "0",
 		"AS_NAME" => "0",
 		"FIELD_CLASS" => "textinput",
@@ -30,8 +32,13 @@ if(Bitrix\Main\Loader::includeModule('yenisite.oneclick'))
 		"FIELD_QUANTITY" => "Y",
 		"SEND_REGISTER_EMAIL" => "Y",
 		"EMPTY" => $arParams["EMPTY"],
+		"USE_CAPTCHA" => $rz_b2_options["captcha-quick-buy"],
+		"USE_CAPTCHA_FORCE" => $rz_b2_options["captcha-quick-buy"],
 		"USER_REGISTER_EVENT_NAME" => "[SALE_NEW_ORDER]",
-		"OFFER_PROPS" => $arProps
+		"OFFER_PROPS" => $arProps,
+		"COMMENTS" => "Заказ в 1 клик",
+		"COMPOSITE_FRAME_MODE" => "A",
+		"COMPOSITE_FRAME_TYPE" => "AUTO"
 	),
 	false
 );

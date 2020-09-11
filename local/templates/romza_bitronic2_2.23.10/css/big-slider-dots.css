@@ -1,0 +1,15 @@
+.big-slider .dots {
+  -webkit-transition: background .6s;
+          transition: background .6s;
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  text-align: center;
+}
+.big-slider .dots:hover {
+  background: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,67 @@
+body{
+    background-color: #EFEFEF;
+    color: #202020;
+}
+
+a{
+    color:#202020;
+    text-decoration: none;
+}
+
+a.default-link-color{
+    color: #FECE24;
+    text-decoration: underline;
+}
+
+.container {
+    width: 100%;
+    margin: auto;
+}
+
+.grid{
+    display: table;
+    width: 100%;
+}
+
+.grid__row{
+    display: table-row;
+}
+
+.grid__cell{
+    display: table-cell;
+    vertical-align: top;
+}
+
+.grid__right{
+    text-align: right;
+}
+
+.va-top{
+    vertical-align: top !important;
+}
+
+.va-middle{
+    vertical-align: middle !important;
+}
+
+.bg{
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: auto;
+}
+
+.fs-20{
+    font-size: 20px !important;
+}
+
+@media (min-width: 1200px){
+    .container{
+        max-width: 1100px;
+    }
+}
+
+@media(max-width:767px){
+    .fs-20{
+        font-size: 14px !important;
+    }
+}
